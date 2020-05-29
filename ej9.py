@@ -3,10 +3,10 @@ import random
 import matplotlib.pyplot as plt
 import matplotlib.animation as animation
 from matplotlib.patches import Rectangle
+from matplotlib.patches import Circle
 
-
-MAX_X = 10
-MAX_Y = 10
+MAX_X = 30
+MAX_Y = 30
 
 class Particle:
 
@@ -14,6 +14,7 @@ class Particle:
 
         self.r = np.array((x, y))
         self.styles = {'edgecolor': 'b', 'fill': None}
+        self.radius = 0.5
 
     @property
     def x(self):
@@ -32,14 +33,16 @@ class Particle:
         self.r[1] = value
 
     def draw(self, ax):
-        square = Rectangle(xy=self.r, width=1, height=1)
-        ax.add_patch(square)
+        # square = Circle(xy=self.r, width=1, height=1)
+        square = Circle(xy=self.r, radius=self.radius)
+        algo = ax.add_patch(square)
         return square
 
     def out_of_boundery(self, step):
         next_r = self.r + step
 
-        if next_r[0] >= MAX_X or next_r[0] < -MAX_X or next_r[1] >= MAX_Y or next_r[1] < -MAX_Y:
+        if next_r[0] + self.radius >= MAX_X or next_r[0] - self.radius < -MAX_X or next_r[1] + self.radius >= MAX_Y \
+                or next_r[1] - self.radius < -MAX_Y:
             return True
         return False
 
@@ -69,7 +72,7 @@ class Simulation:
 
     def __init__(self, amount_of_squares):
         self.particles = []
-        self.squares = []
+        # self.squares = []
         self.init_particles(amount_of_squares)
         self.movements = 0
 
@@ -79,10 +82,8 @@ class Simulation:
             self.place_particle()
 
     def place_particle(self):
-        x = random.randint(-MAX_X, MAX_X - 1)
-        y = random.randint(-MAX_Y, MAX_Y - 1)
-        # x = 0
-        # y = 0
+        x = random.randint(-MAX_X + 1, MAX_X - 1)
+        y = random.randint(-MAX_Y + 1, MAX_Y - 1)
 
         particle = self.ParticleClass(x, y)
         # Check that the Particle doesn't overlap one that's already
@@ -90,23 +91,10 @@ class Simulation:
         self.particles.append(particle)
         return True
 
-    def handle_boundary_collisions(self, p, movement):
-
-        if p.x - p.radius < 0:
-            p.x = p.radius
-            p.vx = -p.vx
-        if p.x + p.radius > 1:
-            p.x = 1 - p.radius
-            p.vx = -p.vx
-        if p.y - p.radius < 0:
-            p.y = p.radius
-            p.vy = -p.vy
-        if p.y + p.radius > 1:
-            p.y = 1 - p.radius
-            p.vy = -p.vy
-
     def init(self):
         """Initialize the Matplotlib animation."""
+        print('entre a init')
+        self.squares = []
         for particle in self.particles:
             self.squares.append(particle.draw(self.ax))
         return self.squares
@@ -119,7 +107,7 @@ class Simulation:
 
         self.setup_animation()
         anim = animation.FuncAnimation(self.fig, self.animate,
-                                       init_func=self.init, frames=30, interval=interval, blit=True)
+                                       init_func=self.init, frames=100, interval=interval, blit=True)
         self.save_or_show_animation(anim, save, filename)
 
     def animate(self, i):
@@ -136,7 +124,8 @@ class Simulation:
 
         for i, p in enumerate(self.particles):
             p.advance()
-            self.squares[i].set_xy(p.r)
+            # self.squares[i].set_xy(p.r)
+            self.squares[i].center = p.r
         return self.squares
 
 
@@ -145,8 +134,8 @@ class Simulation:
         for s in ['top', 'bottom', 'left', 'right']:
             self.ax.spines[s].set_linewidth(2)
         self.ax.set_aspect('equal', 'box')
-        self.ax.set_xlim(-10, 10)
-        self.ax.set_ylim(-10, 10)
+        self.ax.set_xlim(-MAX_X, MAX_X)
+        self.ax.set_ylim(-MAX_Y, MAX_Y)
         # self.ax.xaxis.set_ticks([])
         # self.ax.yaxis.set_ticks([])
 
@@ -159,7 +148,7 @@ class Simulation:
             plt.show()
 
 if __name__ == '__main__':
-    nparticles = 1
+    nparticles = 10
     sim = Simulation(nparticles)
     sim.do_animation(save=True)
 
