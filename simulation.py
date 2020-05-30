@@ -1,70 +1,7 @@
-# class Particle:
-#
-#     def __init__(self, x, y):
-#         self.r = np.array((x, y))
-#         self.radius = 0.5
-#         self.right_movements = 0
-#         self.left_movements = 0
-#         self.up_movements = 0
-#         self.down_movements = 0
-#
-#
-#     @property
-#     def x(self):
-#         return self.r[0]
-#
-#     @x.setter
-#     def x(self, value):
-#         self.r[0] = value
-#
-#     @property
-#     def y(self):
-#         return self.r[1]
-#
-#     @y.setter
-#     def y(self, value):
-#         self.r[1] = value
-#
-#     def draw(self, ax):
-#         circle = Circle(xy=self.r, radius=self.radius)
-#         ax.add_patch(circle)
-#         return circle
-#
-#     def out_of_boundery(self, step):
-#         next_r = self.r + step
-#
-#         if next_r[0] + self.radius >= MAX_X or next_r[0] - self.radius < -MAX_X or next_r[1] + self.radius >= MAX_Y \
-#                 or next_r[1] - self.radius < -MAX_Y:
-#             return True
-#         return False
-#
-#     def advance(self):
-#         random_value = random.uniform(0, 1)
-#         step = np.array((0, 0))
-#
-#         if random_value < 0.25:
-#             step = np.array((1, 0))
-#             self.up_movements += 1
-#         elif random_value < 0.5:
-#             step = np.array((0, -1))
-#             self.down_movements += 1
-#         elif random_value < 0.75:
-#             step = np.array((-1, 0))
-#             self.left_movements += 1
-#         else:
-#             step = np.array((0, 1))
-#             self.right_movements += 1
-#
-#         if not self.out_of_boundery(step):
-#             self.r += step
 import random
-
-from matplotlib import animation
-
 from particle import Particle
 import matplotlib.pyplot as plt
 import matplotlib.animation as animation
-
 
 class Simulation:
 
@@ -79,6 +16,13 @@ class Simulation:
         self.movements = 0
         self.frames = frames
         self.fps = fps
+        self.left_density = []
+        self.right_density = []
+        self.area = self.max_x * self.max_y * 4
+
+
+    def calculate_area(self):
+        return self.max_x * self.max_y * 4
 
     def init_particles(self, amount_of_circles):
         for i in range(0, amount_of_circles):
@@ -107,7 +51,8 @@ class Simulation:
     def animate(self, i):
         self.advance_animation()
         self.movements += 1
-        # print("Movimiento", self.movements)
+
+        self.calculate_density()
         return self.circles
 
     def advance_animation(self):
@@ -132,3 +77,21 @@ class Simulation:
             anim.save(filename, writer=writer)
         else:
             plt.show()
+
+
+    def calculate_density(self):
+        count_left = 0
+        count_right = 0
+        for particle in self.particles:
+            if particle.x < 0:
+                count_left += 1
+            else:
+                count_right += 1
+
+
+        left_density = count_left / self.area
+        right_density = count_right / self.area
+
+        self.left_density.append(left_density)
+        self.right_density.append(right_density)
+
