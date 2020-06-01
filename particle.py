@@ -11,7 +11,7 @@ import random
 
 class Particle:
 
-    def __init__(self, x, y, max_x, max_y):
+    def __init__(self, x, y, max_x, max_y, simulation):
         self.max_x = max_x
         self.max_y = max_y
         self.radius = 0.5
@@ -20,6 +20,7 @@ class Particle:
         self.up_movements = 0
         self.down_movements = 0
         self.r = np.array((x, y))
+        self.simulation = simulation
 
 
     @property
@@ -46,26 +47,36 @@ class Particle:
     def out_of_boundery(self, step):
         next_r = self.r + step
 
-        if next_r[0] + self.radius >= self.max_x or next_r[0] - self.radius < -self.max_x or next_r[1] + self.radius >= self.max_y \
-                or next_r[1] - self.radius < -self.max_y:
+        if next_r[0] + self.radius >= self.max_x or \
+                next_r[0] - self.radius < -self.max_x or \
+                next_r[1] + self.radius >= self.max_y or \
+                next_r[1] - self.radius < -self.max_y:
             return True
         return False
+
+    #
+    # def wall_crash(self, step):
+    #     next_r = self.r + step
+    #     for wall in self.simulation.walls:
+    #         if wall.vertical:
+    #             if next_r[1]
+    #         else:
 
     def advance(self):
         random_value = random.uniform(0, 1)
         step = np.array((0, 0))
 
         if random_value < 0.25:
-            step = np.array((1, 0))
+            step = np.array((self.simulation.step_size, 0))
             self.up_movements += 1
         elif random_value < 0.5:
-            step = np.array((0, -1))
+            step = np.array((0, -self.simulation.step_size))
             self.down_movements += 1
         elif random_value < 0.75:
-            step = np.array((-1, 0))
+            step = np.array((-self.simulation.step_size, 0))
             self.left_movements += 1
         else:
-            step = np.array((0, 1))
+            step = np.array((0, self.simulation.step_size))
             self.right_movements += 1
 
         if not self.out_of_boundery(step):
