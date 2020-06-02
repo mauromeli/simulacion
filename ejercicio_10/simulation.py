@@ -7,7 +7,7 @@ class Simulation:
 
     ParticleClass = Particle
 
-    def __init__(self, amount_of_circles=10, max_x=30, max_y=30, frames=100, fps=10, wall=False, step_size=1):
+    def __init__(self, amount_of_circles=10, max_x=30, max_y=30, frames=100, fps=10):
         self.particles = []
         self.max_x = max_x
         self.max_y = max_y
@@ -19,8 +19,6 @@ class Simulation:
         self.left_density = []
         self.right_density = []
         self.area = self.max_x * self.max_y * 4
-        self.wall = wall
-        self.step_size = step_size
 
 
     def calculate_area(self):
@@ -34,7 +32,7 @@ class Simulation:
         x = random.randint(-self.max_x + 1, self.max_x - 1)
         y = random.randint(-self.max_y + 1, self.max_y - 1)
 
-        particle = self.ParticleClass(x, y, self.max_x, self.max_y, self)
+        particle = self.ParticleClass(x, y, self.max_x, self.max_y)
         self.particles.append(particle)
         return True
 
@@ -63,6 +61,7 @@ class Simulation:
             self.circles[i].center = p.r
         return self.circles
 
+
     def setup_animation(self):
         self.fig, self.ax = plt.subplots()
         for s in ['top', 'bottom', 'left', 'right']:
@@ -79,6 +78,7 @@ class Simulation:
         else:
             plt.show()
 
+
     def calculate_density(self):
         count_left = 0
         count_right = 0
@@ -87,6 +87,7 @@ class Simulation:
                 count_left += 1
             else:
                 count_right += 1
+
 
         left_density = count_left / self.area
         right_density = count_right / self.area
