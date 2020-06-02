@@ -4,7 +4,7 @@ import random
 
 class Particle:
 
-    def __init__(self, x, y, max_x, max_y, simulation):
+    def __init__(self, x, y, max_x, max_y, simulation, color='blue'):
         self.max_x = max_x
         self.max_y = max_y
         self.radius = 0.1
@@ -15,6 +15,7 @@ class Particle:
         self.r = np.array((x, y))
         self.simulation = simulation
         self.circle = None
+        self.color = color
 
     @property
     def x(self):
@@ -34,6 +35,7 @@ class Particle:
 
     def draw(self, ax):
         circle = Circle(xy=self.r, radius=self.radius)
+        circle.set_color(self.color)
         self.circle = circle
         ax.add_patch(circle)
         return circle
