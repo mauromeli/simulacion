@@ -7,7 +7,7 @@ class Particle:
     def __init__(self, x, y, max_x, max_y, simulation):
         self.max_x = max_x
         self.max_y = max_y
-        self.radius = 0.5
+        self.radius = 0.1
         self.right_movements = 0
         self.left_movements = 0
         self.up_movements = 0
