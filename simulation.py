@@ -80,7 +80,7 @@ class Simulation:
             print('entre a guardar')
             Writer = animation.writers['imagemagick']
             writer = Writer(fps=self.fps, bitrate=1800)
-            anim.save(filename, writer=writer)
+            anim.save(filename, writer=writer, dpi=50)
             print('guarde')
         else:
             plt.show()
