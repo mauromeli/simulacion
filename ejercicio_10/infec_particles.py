@@ -21,23 +21,3 @@ class infec_particles(Particle):
         circle = Circle(xy=self.r, radius=self.radius, facecolor=self.color)
         ax.add_patch(circle)
         return circle
-
-    def advance(self):
-        random_value = random.uniform(0, 1)
-        step = np.array((0, 0))
-
-        if random_value < 0.25:
-            step = np.array((1, 0))
-            self.up_movements += 1
-        elif random_value < 0.5:
-            step = np.array((0, -1))
-            self.down_movements += 1
-        elif random_value < 0.75:
-            step = np.array((-1, 0))
-            self.left_movements += 1
-        else:
-            step = np.array((0, 1))
-            self.right_movements += 1
-
-        if not self.out_of_boundery(step):
-            self.r += step
