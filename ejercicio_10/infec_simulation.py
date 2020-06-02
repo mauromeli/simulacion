@@ -1,7 +1,7 @@
 from simulation import Simulation
 from infec_particles import infec_particles
 import random
-import numpy as np
+import matplotlib.animation as animation
 
 class infec_simulation(Simulation):
 
@@ -19,8 +19,7 @@ class infec_simulation(Simulation):
         self.left_density = []
         self.right_density = []
         self.area = self.max_x * self.max_y * 4
-        self.number_of_infected = np.array[5] #5 infected at timestamp 1 always
-        self.timestap = np.array[1]
+        self.infections_per_cicle = [5] #5 infected at timestamp 1 always
 
     def init_particles(self, amount_of_circles):
         inicial_infected_particles = 0
@@ -52,6 +51,14 @@ class infec_simulation(Simulation):
         self.particles.append(particle)
         return True
 
+    def do_animation(self, save=False, interval=1, filename='collision.gif'):
+        self.setup_animation()
+        anim = animation.FuncAnimation(self.fig, self.animate,
+                                       init_func=self.init, frames=self.frames, interval=interval, blit=True)
+        self.save_or_show_animation(anim, save, filename)
+
+        return self.infections_per_cicle
+
 
     def advance_animation(self):
         for i, p in enumerate(self.particles):
@@ -59,6 +66,7 @@ class infec_simulation(Simulation):
             self.circles[i].center = p.r
 
         self.change_state(self.circles)
+        self.count_infections(self.circles)
 
         return self.circles
 
@@ -71,15 +79,49 @@ class infec_simulation(Simulation):
             infected = False
             while not infected and (j < len(circles) -1):
 
-                if (circles[j].get_facecolor() != circles[i].get_facecolor()):
-                    neighborX = circles[i].center[0] + 1 == circles[j].center[0] or circles[i].center[0] - 1 == circles[j].center[0]
-                    neighborY = circles[i].center[1] + 1 == circles[j].center[1] or circles[i].center[1] - 1 == circles[j].center[1]
+                if (circles[i].get_facecolor() == (1.0, 0.0, 0.0, 1.0)): #Code of red color
+                    neighbors = self.calclulate_neighbors(circles[i], circles[j])
 
-                    if((neighborX or neighborY)):
+                    if((neighbors)):
                         infect_prob = random.uniform(0,1)
 
-                        if(infect_prob <= 0.6):
-                            circles[i].set_facecolor("Red")
+                        if(infect_prob < 0.1):
+                            circles[j].set_facecolor("Red")
                             infected = True
 
-                j += 1
+                j = j + 1
+
+
+    #Calculate the 8 posibilitys of being neighbors
+    def calclulate_neighbors(self, circle1, circle2):
+
+        option1 = (circle1.center[0] == circle2.center[0]) and (
+                    circle1.center[1] + 1 == circle2.center[1] or circle1.center[1] - 1 == circle2.center[1])
+
+        option2 = (circle1.center[1] == circle2.center[1]) and (
+                    circle1.center[0] + 1 == circle2.center[1] or circle1.center[0] - 1 == circle2.center[1])
+
+        option3 = (circle1.center[0] - 1 == circle2.center[0]) and (
+                    circle1.center[1] + 1 == circle2.center[1] or circle1.center[1] - 1 == circle2.center[1])
+
+        option4 = (circle1.center[0] + 1 == circle2.center[0]) and (
+                    circle1.center[1] + 1 == circle2.center[1] or circle1.center[1] - 1 == circle2.center[1])
+
+        if(option1 or option2 or option3 or option4):
+            return True
+        else:
+            return False
+
+    #Count the number of infections per cicle
+    def count_infections(self, circles):
+
+        number_of_infected = 0
+
+        for i in range(0, len(circles)):
+
+            if (circles[i].get_facecolor() == (1.0, 0.0, 0.0, 1.0)):
+                number_of_infected = number_of_infected + 1
+
+        self.infections_per_cicle.append(number_of_infected)
+
+
