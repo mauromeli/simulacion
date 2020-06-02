@@ -43,7 +43,6 @@ class Particle:
     def out_of_boundery(self, step):
         next_r = self.r + step
 
-        # TODO: Queda horrible pero quizas funciona.
         if self.simulation.wall and ((self.r[0] <= 0 <= next_r[0] or self.r[0] >= 0 >= next_r[0])
                                      and (self.r[1] >= 0 or next_r[1] >= 0)):
             return True

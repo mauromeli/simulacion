@@ -22,6 +22,7 @@ class Simulation:
         self.wall = wall
         self.step_size = step_size
 
+
     def calculate_area(self):
         return self.max_x * self.max_y * 4
 
