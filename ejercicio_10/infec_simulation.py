@@ -45,7 +45,7 @@ class infec_simulation(Simulation):
 
         particle = self.ParticleClass(x, y, self.max_x, self.max_y, color)
 
-        if(color == 'r'):
+        if(color == "Red"):
             particle.time_infected +=1
 
         self.particles.append(particle)
@@ -64,6 +64,8 @@ class infec_simulation(Simulation):
         for i, p in enumerate(self.particles):
             p.advance()
             self.circles[i].center = p.r
+
+        #self.cure_particles(self.circles) #TO USE MODEL A COMMENT THIS LINE
 
         self.change_state(self.circles)
         self.count_infections(self.circles)
@@ -85,7 +87,7 @@ class infec_simulation(Simulation):
                     if((neighbors)):
                         infect_prob = random.uniform(0,1)
 
-                        if(infect_prob < 0.1):
+                        if(infect_prob <= 0.6):
                             circles[j].set_facecolor("Red")
                             infected = True
 
@@ -121,7 +123,20 @@ class infec_simulation(Simulation):
 
             if (circles[i].get_facecolor() == (1.0, 0.0, 0.0, 1.0)):
                 number_of_infected = number_of_infected + 1
+                self.particles[i].time_infected += 1
 
         self.infections_per_cicle.append(number_of_infected)
 
 
+    #Cure the particles if it can be cure
+    def cure_particles(self, circles):
+
+        for i in range(0, len(self.particles)):
+
+            if(self.particles[i].time_infected >= 20):
+
+                prob_cure = random.uniform(0,3)
+
+                if(prob_cure <= 0,1):
+                    self.circles[i].set_facecolor("Blue")
+                    self.particles[i].time_infected = 0
