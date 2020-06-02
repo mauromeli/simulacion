@@ -31,8 +31,9 @@ class Simulation:
             self.place_particle()
 
     def place_particle(self):
-        x = random.randint(-self.max_x + 1, self.max_x - 1)
-        y = random.randint(-self.max_y + 1, self.max_y - 1)
+
+        x = random.uniform(-self.max_x + 1, self.max_x - 1)
+        y = random.uniform(-self.max_y + 1, self.max_y - 1)
 
         particle = self.ParticleClass(x, y, self.max_x, self.max_y, self)
         self.particles.append(particle)
