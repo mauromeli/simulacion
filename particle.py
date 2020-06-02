@@ -4,7 +4,7 @@ import random
 
 class Particle:
 
-    def __init__(self, x, y, max_x, max_y, simulation):
+    def __init__(self, x, y, max_x, max_y, simulation, color='blue'):
         self.max_x = max_x
         self.max_y = max_y
         self.radius = 0.1
@@ -15,6 +15,7 @@ class Particle:
         self.r = np.array((x, y))
         self.simulation = simulation
         self.circle = None
+        self.color = color
 
     @property
     def x(self):
@@ -34,6 +35,7 @@ class Particle:
 
     def draw(self, ax):
         circle = Circle(xy=self.r, radius=self.radius)
+        circle.set_color(self.color)
         self.circle = circle
         ax.add_patch(circle)
         return circle
@@ -41,7 +43,6 @@ class Particle:
     def out_of_boundery(self, step):
         next_r = self.r + step
 
-        # TODO: Queda horrible pero quizas funciona.
         if self.simulation.wall and ((self.r[0] <= 0 <= next_r[0] or self.r[0] >= 0 >= next_r[0])
                                      and (self.r[1] >= 0 or next_r[1] >= 0)):
             return True
@@ -53,8 +54,7 @@ class Particle:
             return True
         return False
 
-    def advance(self):
-        random_value = random.uniform(0, 1)
+    def advance(self, random_value=random.uniform(0, 1)):
         step = np.array((0, 0))
 
         if random_value < 0.25:
