@@ -2,6 +2,7 @@ import random
 from particle import Particle
 import matplotlib.pyplot as plt
 import matplotlib.animation as animation
+import numpy as np
 
 class Simulation:
 
@@ -59,8 +60,9 @@ class Simulation:
         return self.circles
 
     def advance_animation(self):
+        randoms = np.random.uniform(0, 1, self.amount_of_circles)
         for i, p in enumerate(self.particles):
-            p.advance()
+            p.advance(randoms[i])
             self.circles[i].center = p.r
         return self.circles
 

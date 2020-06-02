@@ -54,8 +54,7 @@ class Particle:
             return True
         return False
 
-    def advance(self):
-        random_value = random.uniform(0, 1)
+    def advance(self, random_value=random.uniform(0, 1)):
         step = np.array((0, 0))
 
         if random_value < 0.25:
