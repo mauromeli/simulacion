@@ -1,10 +1,26 @@
 from simulation import Simulation
 from infec_particles import infec_particles
 import random
+import numpy as np
 
 class infec_simulation(Simulation):
 
     ParticleClass = infec_particles
+
+    def __init__(self, amount_of_circles=10, max_x=30, max_y=30, frames=100, fps=10):
+        self.particles = []
+        self.max_x = max_x
+        self.max_y = max_y
+        self.amount_of_circles = amount_of_circles
+        self.init_particles(amount_of_circles)
+        self.movements = 0
+        self.frames = frames
+        self.fps = fps
+        self.left_density = []
+        self.right_density = []
+        self.area = self.max_x * self.max_y * 4
+        self.number_of_infected = np.array[5] #5 infected at timestamp 1 always
+        self.timestap = np.array[1]
 
     def init_particles(self, amount_of_circles):
         inicial_infected_particles = 0
@@ -62,7 +78,7 @@ class infec_simulation(Simulation):
                     if((neighborX or neighborY)):
                         infect_prob = random.uniform(0,1)
 
-                        if(infect_prob < 0.9):
+                        if(infect_prob <= 0.6):
                             circles[i].set_facecolor("Red")
                             infected = True
 
