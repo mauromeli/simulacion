@@ -1,5 +1,6 @@
 import csv
 import numpy as np
+import sympy as sy
 
 
 # 11 sube sube
@@ -44,5 +45,13 @@ with open('./accion_a.csv', 'r') as file:
 
 matrix = calculate_probability_matrix(states)
 
+
+print('La matriz de transición de estados es: ')
 print(matrix)
+
+
 print(matrix ** 1000)
+
+pi0, pi1 = sy.symbols('pi0 pi1')
+
+print(sy.solve((matrix[0,0] * pi0 + matrix[1,0] * pi1 - pi0, matrix[0,1] * pi0 + matrix[1,1] * pi1 - pi1, pi0+pi1-1), pi0, pi1))
